@@ -2,6 +2,11 @@ package user
 
 import "context"
 
+type Service interface {
+	AdminUserService
+	UserService
+}
+
 type AdminUserService interface {
 	UpdateUserStatus(context.Context, UpdateUserStatusReq) (*User, error)
 }
