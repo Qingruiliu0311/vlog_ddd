@@ -8,12 +8,12 @@ type Service interface {
 }
 
 type InnerService interface {
-	ValidateToken(context.Context, *ValidateTokenReq)
+	ValidateToken(context.Context, *ValidateTokenReq) (*Token, error)
 }
 
 type UserService interface {
-	IssueToken(context.Context, *IssueTokenReq)
-	RevokeToken(context.Context, *RevokeTokenReq)
+	IssueToken(context.Context, *IssueTokenReq) (*Token, error)
+	RevokeToken(context.Context, *RevokeTokenReq) (*Token, error)
 }
 
 type ValidateTokenReq struct {
