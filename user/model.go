@@ -3,12 +3,22 @@ package user
 import (
 	"time"
 
+	"github.com/Qingruiliu0311/vlog_ddd/exception"
+	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 
+func New(req *RegistryReq) (*User, error) {
+	err := req.Validate()
+	if err != nil {
+		return nil, exception.NewBadRequest("参数校验失败: %s", err)
+	}
+	return &User{
+		RegistryReq: *req,
+	}, nil
+}
+
 type User struct {
-	Name string `json:"name" gorm:"column:name;type:varchar(255)"`
-	Age  uint   `json:"age" gorm:"column:age;type:uint"`
 	RegistryReq
 	gorm.Model
 }
@@ -16,8 +26,16 @@ type User struct {
 type RegistryReq struct {
 	Email    string `json:"email" gorm:"column:username;unique;index" validate:"required"`
 	Password string `json:"password" gorm:"column:password;type:varchar(255)" validate:"required"`
+	Name     string `json:"name" gorm:"column:name;type:varchar(255)"`
+	Age      uint   `json:"age" gorm:"column:age;type:uint"`
 	Profile
 	Status
+}
+
+var validate = validator.New()
+
+func (r RegistryReq) Validate() error {
+	return validate.Struct(r)
 }
 
 type Status struct {

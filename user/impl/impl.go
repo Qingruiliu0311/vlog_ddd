@@ -4,15 +4,39 @@ import (
 	"context"
 
 	"github.com/Qingruiliu0311/vlog_ddd/user"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 var UserService user.Service = &UserServiceImplement{}
 
-type UserServiceImplement struct{}
+type UserServiceImplement struct {
+	Db *gorm.DB
+}
 
 // Registry implements [user.Service].
-func (u *UserServiceImplement) Registry(context.Context, *user.RegistryReq) (*user.User, error) {
-	panic("unimplemented")
+func (u *UserServiceImplement) Registry(ctx context.Context, in *user.RegistryReq) (*user.User, error) {
+	ins, err := user.New(in)
+	if err != nil {
+		return nil, err
+	}
+	HashPass, err := bcrypt.GenerateFromPassword([]byte(in.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+
+	ins.Password = string(HashPass)
+	err = u.Db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Create(ins).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return ins, nil
 }
 
 // ResetPassword implements [user.Service].
