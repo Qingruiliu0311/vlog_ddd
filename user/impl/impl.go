@@ -116,6 +116,23 @@ func (u *UserServiceImplement) UpdateProfile(context.Context) {
 }
 
 // UpdateUserStatus implements [user.Service].
-func (u *UserServiceImplement) UpdateUserStatus(context.Context, user.UpdateUserStatusReq) (*user.User, error) {
-	panic("unimplemented")
+func (u *UserServiceImplement) BlockUserStatus(ctx context.Context, in *user.BlockUserStatusReq) (*user.User, error) {
+
+	err := u.Db.Model(&user.User{}).Where("email=?", in.Email).Updates(user.User{
+		Status: in.Status,
+	}).Error
+	if err != nil {
+		return nil, err
+	}
+	var CurrentStatus user.User
+	err = u.Db.Model(&user.User{}).Where("email=?", in.Email).Take(&CurrentStatus).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &CurrentStatus, nil
+}
+
+func (u *UserServiceImplement) UnblockUserStatus(ctx context.Context, in *user.UnblockUserStatusReq) (*user.User, error) {
+	panic("not implemented")
 }

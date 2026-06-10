@@ -8,9 +8,13 @@ type Service interface {
 }
 
 type AdminUserService interface {
-	UpdateUserStatus(context.Context, UpdateUserStatusReq) (*User, error)
+	// UpdateUserStatus(context.Context, *UpdateUserStatusReq) (*User, error)
+	UpdateUserStatus
 }
-
+type UpdateUserStatus interface {
+	BlockUserStatus(context.Context, *BlockUserStatusReq) (*User, error)
+	UnblockUserStatus(context.Context, *UnblockUserStatusReq) (*User, error)
+}
 type UserService interface {
 	Registry(context.Context, *RegistryReq) (*User, error)
 	UpdatePassword(context.Context, *UpdatePasswordReq) (*User, error)
@@ -18,7 +22,12 @@ type UserService interface {
 	Unregistry(context.Context, *UnregistryReq) error
 	UpdateProfile(context.Context)
 }
-type UpdateUserStatusReq struct {
+type BlockUserStatusReq struct {
+	Email string `json:"email"`
+	Status
+}
+
+type UnblockUserStatusReq struct {
 	Email string `json:"email"`
 	Status
 }

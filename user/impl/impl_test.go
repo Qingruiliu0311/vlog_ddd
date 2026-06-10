@@ -3,6 +3,7 @@ package impl_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/Qingruiliu0311/vlog_ddd/user"
 	"github.com/Qingruiliu0311/vlog_ddd/user/impl"
@@ -62,6 +63,21 @@ func TestUpdatePassword(t *testing.T) {
 		Email:       "test3@test.com",
 		OldPassword: "12345",
 		NewPassword: "123456",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(u)
+}
+
+func TestBlockUserStatus(t *testing.T) {
+	blockedAt := time.Now()
+	u, err := svc.BlockUserStatus(context.Background(), &user.BlockUserStatusReq{
+		Email: "test3@test.com",
+		Status: user.Status{
+			BlockedAt:   &blockedAt,
+			BlockReason: "Test",
+		},
 	})
 	if err != nil {
 		t.Fatal(err)

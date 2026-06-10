@@ -21,6 +21,7 @@ func New(req *RegistryReq) (*User, error) {
 type User struct {
 	RegistryReq
 	gorm.Model
+	Status
 }
 
 type RegistryReq struct {
@@ -29,7 +30,6 @@ type RegistryReq struct {
 	Name     string `json:"name" gorm:"column:name;type:varchar(255)"`
 	Age      uint   `json:"age" gorm:"column:age;type:uint"`
 	Profile
-	Status
 }
 
 var validate = validator.New()
