@@ -77,8 +77,12 @@ func (u *UserServiceImplement) ResetPassword(ctx context.Context, ins *user.Rese
 }
 
 // Unregistry implements [user.Service].
-func (u *UserServiceImplement) Unregistry(context.Context, user.UnregistryReq) error {
-	panic("unimplemented")
+func (u *UserServiceImplement) Unregistry(ctx context.Context, in *user.UnregistryReq) error {
+	err := u.Db.Model(&user.User{}).Where("email=?", in.Email).Delete(&user.User{}).Error
+	if err != nil {
+		return exception.NewBadRequest("couldn't delete %s", err)
+	}
+	return nil
 }
 
 // UpdatePassword implements [user.Service].

@@ -23,7 +23,7 @@ func init() {
 
 func TestRegistry(t *testing.T) {
 	u, err := svc.Registry(context.Background(), &user.RegistryReq{
-		Email:    "test4@test.com",
+		Email:    "test2@test.com",
 		Password: "12345678",
 	})
 	if err != nil {
@@ -45,4 +45,14 @@ func TestResetPassword(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(u)
+}
+
+func TestUnregistry(t *testing.T) {
+	err := svc.Unregistry(context.Background(), &user.UnregistryReq{
+		Email:            "test2@test.com",
+		VerificationCode: "123456",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 }
