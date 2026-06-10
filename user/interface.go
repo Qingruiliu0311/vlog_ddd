@@ -14,7 +14,7 @@ type AdminUserService interface {
 type UserService interface {
 	Registry(context.Context, *RegistryReq) (*User, error)
 	UpdatePassword(context.Context, UpdatePasswordReq) error
-	ResetPassword(context.Context, ResetPasswordReq) (*User, error)
+	ResetPassword(context.Context, *ResetPasswordReq) (*User, error)
 	Unregistry(context.Context, UnregistryReq) error
 	UpdateProfile(context.Context)
 }

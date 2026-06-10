@@ -23,8 +23,23 @@ func init() {
 
 func TestRegistry(t *testing.T) {
 	u, err := svc.Registry(context.Background(), &user.RegistryReq{
-		Email:    "test2@test.com",
+		Email:    "test4@test.com",
 		Password: "12345678",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(u)
+}
+
+//$2a$10$biTNweKEIXCtRByb0/./vemBv7pi1OmtBZoWAdip9RVEekF.O2QFO
+//$2a$10$jMxlpWercvs8cDBdEWHw2uK4mekcaKcy3FzKQV8AneI9RTOO9vntO
+
+func TestResetPassword(t *testing.T) {
+	u, err := svc.ResetPassword(context.Background(), &user.ResetPasswordReq{
+		Email:            "test2@test.com",
+		NewPassword:      "1234",
+		VerificationCode: "123456",
 	})
 	if err != nil {
 		t.Fatal(err)

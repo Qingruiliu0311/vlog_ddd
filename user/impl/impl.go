@@ -2,7 +2,9 @@ package impl
 
 import (
 	"context"
+	"errors"
 
+	"github.com/Qingruiliu0311/vlog_ddd/exception"
 	"github.com/Qingruiliu0311/vlog_ddd/user"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -27,7 +29,16 @@ func (u *UserServiceImplement) Registry(ctx context.Context, in *user.RegistryRe
 
 	ins.Password = string(HashPass)
 	err = u.Db.Transaction(func(tx *gorm.DB) error {
-		err := tx.Create(ins).Error
+		var existingUser user.User
+		err := tx.Where("email=?", in.Email).First(&existingUser).Error
+		if err == nil {
+			return exception.NewConflictRequest("Email %s has already being registered", existingUser.Email)
+		}
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return exception.NewBadRequest("bad request: %s", err)
+		}
+
+		err = tx.Create(ins).Error
 		if err != nil {
 			return err
 		}
@@ -40,8 +51,29 @@ func (u *UserServiceImplement) Registry(ctx context.Context, in *user.RegistryRe
 }
 
 // ResetPassword implements [user.Service].
-func (u *UserServiceImplement) ResetPassword(context.Context, user.ResetPasswordReq) (*user.User, error) {
-	panic("unimplemented")
+func (u *UserServiceImplement) ResetPassword(ctx context.Context, ins *user.ResetPasswordReq) (*user.User, error) {
+	hashpass, err := bcrypt.GenerateFromPassword([]byte(ins.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	//fake it do it later
+	sentcode := "123456"
+	if ins.VerificationCode != sentcode {
+		return nil, exception.NewUnauthorisation("Incorrect verification code")
+	}
+	ins.NewPassword = string(hashpass)
+	err = u.Db.Model(&user.User{}).Where("email=?", ins.Email).Update("password", ins.NewPassword).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var result = &user.User{}
+
+	err = u.Db.Where("email=?", ins.Email).Take(result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 // Unregistry implements [user.Service].

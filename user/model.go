@@ -24,7 +24,7 @@ type User struct {
 }
 
 type RegistryReq struct {
-	Email    string `json:"email" gorm:"column:username;unique;index" validate:"required"`
+	Email    string `json:"email" gorm:"column:email;unique;index" validate:"required"`
 	Password string `json:"password" gorm:"column:password;type:varchar(255)" validate:"required"`
 	Name     string `json:"name" gorm:"column:name;type:varchar(255)"`
 	Age      uint   `json:"age" gorm:"column:age;type:uint"`
