@@ -86,8 +86,28 @@ func (u *UserServiceImplement) Unregistry(ctx context.Context, in *user.Unregist
 }
 
 // UpdatePassword implements [user.Service].
-func (u *UserServiceImplement) UpdatePassword(context.Context, user.UpdatePasswordReq) error {
-	panic("unimplemented")
+func (u *UserServiceImplement) UpdatePassword(ctx context.Context, in *user.UpdatePasswordReq) (*user.User, error) {
+
+	var ExistingUser user.User
+	err := u.Db.Where("email=?", in.Email).Take(&ExistingUser).Error
+	if err != nil {
+		return nil, err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(ExistingUser.Password), []byte(in.OldPassword))
+	if err != nil {
+		return nil, err
+	}
+
+	hashNewPass, err := bcrypt.GenerateFromPassword([]byte(in.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	err = u.Db.Model(&user.User{}).Where("email=?", in.Email).Update("password", hashNewPass).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &ExistingUser, nil
 }
 
 // UpdateProfile implements [user.Service].

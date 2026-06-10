@@ -56,3 +56,15 @@ func TestUnregistry(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestUpdatePassword(t *testing.T) {
+	u, err := svc.UpdatePassword(context.Background(), &user.UpdatePasswordReq{
+		Email:       "test3@test.com",
+		OldPassword: "12345",
+		NewPassword: "123456",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(u)
+}
