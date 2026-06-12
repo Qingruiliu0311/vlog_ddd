@@ -18,8 +18,8 @@ func init() {
 		panic(err)
 	}
 	svc := &impl.TokenServiceImplement{
-		Db:   db,
-		User: &userImpl.UserServiceImplement{Db: db},
+		Db:      db,
+		UserSvc: &userImpl.UserServiceImplement{Db: db},
 	}
 	token.Register(svc)
 }
@@ -29,4 +29,24 @@ func TestIssueToken(t *testing.T) {
 	req.Email = "test3@test.com"
 	req.Password = "1234"
 	token.GetService().IssueToken(context.Background(), req)
+}
+
+func TestRevokeToken(t *testing.T) {
+	req := token.NewRevokeTokenReq()
+	req.AccessToken = "07e685a5-3d5f-4374-9370-80480d71cf84"
+	req.RefreshToken = "ddf4bf2a-037e-4a96-a79b-2f609825e3b0"
+	_, err := token.GetService().RevokeToken(context.Background(), req)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestValidateToken(t *testing.T) {
+	req := token.NewValidateTokenReq()
+	req.AccessToken = "81bf192c-0eb4-4e16-b305-ff28a62214aa"
+	tk, err := token.GetService().ValidateToken(context.Background(), req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tk)
 }

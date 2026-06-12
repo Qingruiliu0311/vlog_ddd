@@ -9,7 +9,7 @@ import (
 type Token struct {
 	Id        uint   `json:"id" gorm:"column:id;primaryKey"`
 	RefUserId string `json:"ref_user_id" gorm:"column:ref_user_id"`
-	RefEmail  string `json:"ref_email" gorm:"column:ref_email"`
+	RefEmail  string `json:"ref_email" gorm:"column:ref_email;uniqueIndex"`
 
 	//access token
 	AccessToken          string     `json:"access_token" gorm:"column:access_token;unique;index"`
