@@ -7,11 +7,18 @@ type Service interface {
 	UserService
 }
 
+var service Service
+
+func GetService() Service {
+	return service
+}
+
 type AdminUserService interface {
 	// UpdateUserStatus(context.Context, *UpdateUserStatusReq) (*User, error)
 	UpdateUserStatus
 }
 type UpdateUserStatus interface {
+	DescribeUser(context.Context, *DescribeUserReq) (*User, error)
 	BlockUserStatus(context.Context, *BlockUserStatusReq) (*User, error)
 	UnblockUserStatus(context.Context, *UnblockUserStatusReq) (*User, error)
 }
@@ -22,6 +29,15 @@ type UserService interface {
 	Unregistry(context.Context, *UnregistryReq) error
 	UpdateProfile(context.Context)
 }
+
+type DescribeUserReq struct {
+	Email string `json:"email"`
+}
+
+func NewDescribeUserReq(email string) *DescribeUserReq {
+	return &DescribeUserReq{Email: email}
+}
+
 type BlockUserStatusReq struct {
 	Email string `json:"email"`
 	Status

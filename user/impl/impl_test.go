@@ -38,7 +38,7 @@ func TestRegistry(t *testing.T) {
 
 func TestResetPassword(t *testing.T) {
 	u, err := svc.ResetPassword(context.Background(), &user.ResetPasswordReq{
-		Email:            "test2@test.com",
+		Email:            "test3@test.com",
 		NewPassword:      "1234",
 		VerificationCode: "123456",
 	})

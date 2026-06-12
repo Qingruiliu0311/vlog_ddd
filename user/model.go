@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
+//TODO: Audit log for block/unblock of a user
+
 func New(req *RegistryReq) (*User, error) {
 	err := req.Validate()
 	if err != nil {

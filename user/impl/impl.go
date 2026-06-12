@@ -16,6 +16,16 @@ type UserServiceImplement struct {
 	Db *gorm.DB
 }
 
+// Admin Describe User
+func (u *UserServiceImplement) DescribeUser(ctx context.Context, in *user.DescribeUserReq) (*user.User, error) {
+	existingUser := &user.User{}
+	err := u.Db.Model(user.User{}).Where("email=?", in.Email).Take(existingUser).Error
+	if err != nil {
+		return nil, err
+	}
+	return existingUser, nil
+}
+
 // Registry implements [user.Service].
 func (u *UserServiceImplement) Registry(ctx context.Context, in *user.RegistryReq) (*user.User, error) {
 	ins, err := user.New(in)
@@ -133,6 +143,7 @@ func (u *UserServiceImplement) BlockUserStatus(ctx context.Context, in *user.Blo
 	return &CurrentStatus, nil
 }
 
+// TODO: implement unblock with audit log
 func (u *UserServiceImplement) UnblockUserStatus(ctx context.Context, in *user.UnblockUserStatusReq) (*user.User, error) {
 	panic("not implemented")
 }
