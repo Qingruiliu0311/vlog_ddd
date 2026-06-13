@@ -1,6 +1,9 @@
 package blog
 
-import "context"
+import (
+	"context"
+	"encoding/json"
+)
 
 type Service interface {
 	CreateBlog(context.Context, *CreateBlogReq) (*Blog, error)
@@ -26,6 +29,15 @@ type BlogSet struct {
 	Items []*Blog `json:"items"`
 }
 
+func (b *BlogSet) String() string {
+	bs, _ := json.MarshalIndent(b, "", "  ")
+	return string(bs)
+}
+
+func NewBlogSet() *BlogSet {
+	return &BlogSet{}
+}
+
 type EditBlogReq struct {
 	Id uint `json:"id"`
 	CreateBlogReq
@@ -46,6 +58,8 @@ type QueryBlogReq struct {
 	CreatedBy string            `json:"created_by" form:"created_by"`
 	Category  string            `json:"category" form:"category"`
 	Tag       map[string]string `json:"tag" form:"-"`
+	Offset    uint              `json:"offset" form:"offset"`
+	PageSize  uint              `json:"page_size" form:"page_size"`
 }
 
 type DescribeBlogReq struct {

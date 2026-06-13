@@ -20,7 +20,7 @@ func (b *BlogServiceImplementation) CreateBlog(ctx context.Context, in *blog.Cre
 		return nil, err
 	}
 	ins := blog.NewCreateBlog(in)
-	err = b.Db.Create(ins).Error
+	err = b.Db.WithContext(ctx).Create(ins).Error
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +49,37 @@ func (b *BlogServiceImplementation) PublishBlog(context.Context, *blog.PublishBl
 }
 
 // QueryBlog implements [blog.Service].
-func (b *BlogServiceImplementation) QueryBlog(context.Context, blog.QueryBlogReq) (*blog.BlogSet, error) {
-	panic("unimplemented")
+func (b *BlogServiceImplementation) QueryBlog(ctx context.Context, in blog.QueryBlogReq) (*blog.BlogSet, error) {
+	query := b.Db.WithContext(ctx).Model(&blog.Blog{})
+	if in.Category != "" {
+		query = query.Where("category=?", in.Category)
+	}
+	if in.CreatedBy != "" {
+		query = query.Where("category=?", in.CreatedBy)
+	}
+	if in.Keyword != "" {
+		query = query.Where("title Like ?", "%"+in.Keyword+"%")
+	}
+	if in.Stage != nil {
+		query = query.Where("stage=?", in.Stage)
+	}
+	if len(in.Tag) > 0 {
+		for k, v := range in.Tag {
+			query = query.Where("JSON_EXTRACT(tag,?)=?", "$."+k, v)
+		}
+	}
+
+	set := blog.NewBlogSet()
+
+	//total
+	err := query.Count(&set.Total).Error
+	if err != nil {
+		return nil, err
+	}
+	//pagination
+	err = query.Order("created_at DESC").Offset(int((in.Offset - 1) * in.PageSize)).Limit(int(in.PageSize)).Find(&set.Items).Error
+	if err != nil {
+		return nil, err
+	}
+	return set, nil
 }

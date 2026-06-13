@@ -29,7 +29,7 @@ func TestCreateBlog(t *testing.T) {
 		Title:   "Golang",
 		Content: "This is golang tutorial",
 		Summary: "Very Good",
-		Tag:     map[string]string{"language": "Golang"},
+		Tag:     map[string]string{"language": "Golang", "language2": "Java"},
 		Catelog: "static",
 	}
 	b, err := blog.GetService().CreateBlog(context.Background(), &req)
@@ -37,4 +37,18 @@ func TestCreateBlog(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(b)
+}
+
+func TestQueryBlog(t *testing.T) {
+	stage := blog.Draft
+	req := blog.QueryBlogReq{
+		Stage:    &stage,
+		Offset:   1,
+		PageSize: 2,
+	}
+	result, err := blog.GetService().QueryBlog(context.Background(), req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(result)
 }
