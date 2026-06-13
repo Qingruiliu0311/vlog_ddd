@@ -16,7 +16,7 @@ func GetService() Service {
 	return service
 }
 
-func Register(svc Service) {
+func RegisterService(svc Service) {
 	service = svc
 }
 

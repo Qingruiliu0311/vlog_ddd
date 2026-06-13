@@ -13,6 +13,10 @@ func GetService() Service {
 	return service
 }
 
+func RegisterService(s Service) {
+	service = s
+}
+
 type AdminUserService interface {
 	// UpdateUserStatus(context.Context, *UpdateUserStatusReq) (*User, error)
 	UpdateUserStatus

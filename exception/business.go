@@ -15,3 +15,7 @@ func NewConflictRequest(format string, a ...any) *ApiException {
 func NewNotFoundRequest(format string, a ...any) *ApiException {
 	return NewApiException(CODE_NOT_FOUND, codeReason(CODE_NOT_FOUND)).WithMessagef(format, a...)
 }
+
+func NewInternalServerRequest(format string, a ...any) *ApiException {
+	return NewApiException(CODE_INTERNAL_SERVER_ERROR, codeReason(CODE_INTERNAL_SERVER_ERROR)).WithMessagef(format, a...)
+}

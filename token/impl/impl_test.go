@@ -21,7 +21,7 @@ func init() {
 		Db:      db,
 		UserSvc: &userImpl.UserServiceImplement{Db: db},
 	}
-	token.Register(svc)
+	token.RegisterService(svc)
 }
 
 func TestIssueToken(t *testing.T) {

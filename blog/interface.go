@@ -53,7 +53,7 @@ type DeleteBlogReq struct {
 }
 
 type QueryBlogReq struct {
-	Stage     *STAGE            `json:"stage"`
+	Stage     *STAGE            `json:"stage" form:"stage"`
 	Keyword   string            `json:"keywords" form:"keywords"`
 	CreatedBy string            `json:"created_by" form:"created_by"`
 	Category  string            `json:"category" form:"category"`
