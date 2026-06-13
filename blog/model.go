@@ -1,8 +1,10 @@
 package blog
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 
@@ -20,6 +22,23 @@ type CreateBlogReq struct {
 	Summary string            `json:"summary" gorm:"column:summary;type:varchar(255)" validate:"required"`
 	Tag     map[string]string `json:"tags" gorm:"column:tag;serializer:json"`
 	Catelog string            `json:"catelog" gorm:"column:catelog;type:varchar(100)"`
+}
+
+func (c *Blog) String() string {
+	b, _ := json.MarshalIndent(c, "", "  ")
+	return string(b)
+}
+
+var validate = validator.New()
+
+func (req *CreateBlogReq) Validate() error {
+	return validate.Struct(req)
+}
+
+func NewCreateBlog(in *CreateBlogReq) *Blog {
+	return &Blog{
+		CreateBlogReq: *in,
+	}
 }
 
 type Status struct {

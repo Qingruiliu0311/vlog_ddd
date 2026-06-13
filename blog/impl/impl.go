@@ -4,15 +4,28 @@ import (
 	"context"
 
 	"github.com/Qingruiliu0311/vlog_ddd/blog"
+	"gorm.io/gorm"
 )
 
 var BlogService blog.Service = &BlogServiceImplementation{}
 
-type BlogServiceImplementation struct{}
+type BlogServiceImplementation struct {
+	Db *gorm.DB
+}
 
 // CreateBlog implements [blog.Service].
-func (b *BlogServiceImplementation) CreateBlog(context.Context, *blog.CreateBlogReq) (*blog.Blog, error) {
-	panic("unimplemented")
+func (b *BlogServiceImplementation) CreateBlog(ctx context.Context, in *blog.CreateBlogReq) (*blog.Blog, error) {
+	err := in.Validate()
+	if err != nil {
+		return nil, err
+	}
+	ins := blog.NewCreateBlog(in)
+	err = b.Db.Create(ins).Error
+	if err != nil {
+		return nil, err
+	}
+	return ins, nil
+
 }
 
 // DeleteBlog implements [blog.Service].

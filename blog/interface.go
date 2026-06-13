@@ -11,6 +11,16 @@ type Service interface {
 	DescribeBlog(context.Context) (*Blog, error)
 }
 
+var svc Service
+
+func GetService() Service {
+	return svc
+}
+
+func RegisterService(s Service) {
+	svc = s
+}
+
 type BlogSet struct {
 	Total int64   `json:"total"`
 	Items []*Blog `json:"items"`
