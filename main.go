@@ -4,6 +4,7 @@ import (
 	"github.com/Qingruiliu0311/vlog_ddd/blog"
 	blogapi "github.com/Qingruiliu0311/vlog_ddd/blog/api"
 	blogimpl "github.com/Qingruiliu0311/vlog_ddd/blog/impl"
+	"github.com/Qingruiliu0311/vlog_ddd/middleware"
 	"github.com/Qingruiliu0311/vlog_ddd/token"
 	tokenapi "github.com/Qingruiliu0311/vlog_ddd/token/api"
 	tokenimpl "github.com/Qingruiliu0311/vlog_ddd/token/impl"
@@ -39,6 +40,7 @@ func main() {
 	r := gin.Default()
 	v1 := r.Group("/api/v1")
 	blog := v1.Group("/blog")
+	blog.Use(middleware.Authentication)
 	bh := blogapi.NewBlogApiHandler()
 	blog.POST("", bh.CreateBlog)
 	blog.GET("", bh.QueryBlog)
