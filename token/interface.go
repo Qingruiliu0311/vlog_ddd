@@ -59,7 +59,7 @@ func NewRevokeTokenReq() *RevokeTokenReq {
 func IsTokenExpired(expiredAt *time.Time) bool {
 	now := time.Now()
 	if now.After(*expiredAt) {
-		return false
+		return true
 	}
-	return true
+	return false
 }

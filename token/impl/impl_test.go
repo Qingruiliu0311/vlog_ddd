@@ -43,7 +43,7 @@ func TestRevokeToken(t *testing.T) {
 
 func TestValidateToken(t *testing.T) {
 	req := token.NewValidateTokenReq()
-	req.AccessToken = "81bf192c-0eb4-4e16-b305-ff28a62214aa"
+	req.AccessToken = "98f0fe5a-6acd-491a-bda0-6389d5d5ffbb"
 	tk, err := token.GetService().ValidateToken(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)

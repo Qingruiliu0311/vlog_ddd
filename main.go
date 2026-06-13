@@ -5,6 +5,7 @@ import (
 	blogapi "github.com/Qingruiliu0311/vlog_ddd/blog/api"
 	blogimpl "github.com/Qingruiliu0311/vlog_ddd/blog/impl"
 	"github.com/Qingruiliu0311/vlog_ddd/token"
+	tokenapi "github.com/Qingruiliu0311/vlog_ddd/token/api"
 	tokenimpl "github.com/Qingruiliu0311/vlog_ddd/token/impl"
 	"github.com/Qingruiliu0311/vlog_ddd/user"
 	userimpl "github.com/Qingruiliu0311/vlog_ddd/user/impl"
@@ -28,15 +29,25 @@ func main() {
 	userSvc := userimpl.UserServiceImplement{Db: db}
 	user.RegisterService(&userSvc)
 
-	tokenSvc := tokenimpl.TokenServiceImplement{Db: db}
+	tokenSvc := tokenimpl.TokenServiceImplement{
+		Db:      db,
+		UserSvc: user.GetService(),
+	}
 	token.RegisterService(&tokenSvc)
 
 	// route
 	r := gin.Default()
-	v1 := r.Group("/blog/api/v1")
-
+	v1 := r.Group("/api/v1")
+	blog := v1.Group("/blog")
 	bh := blogapi.NewBlogApiHandler()
-	v1.POST("", bh.CreateBlog)
-	v1.GET("", bh.QueryBlog)
+	blog.POST("", bh.CreateBlog)
+	blog.GET("", bh.QueryBlog)
+
+	token := v1.Group("/token")
+	th := tokenapi.NewTokenHandler()
+	token.POST("", th.IssueToken)
+	//98f0fe5a-6acd-491a-bda0-6389d5d5ffbb
+	token.POST("/validate", th.ValidateToken)
+	// token.POST()
 	r.Run(":8080")
 }
