@@ -18,14 +18,11 @@ func RegisterService(s Service) {
 }
 
 type AdminUserService interface {
-	// UpdateUserStatus(context.Context, *UpdateUserStatusReq) (*User, error)
-	UpdateUserStatus
-}
-type UpdateUserStatus interface {
 	DescribeUser(context.Context, *DescribeUserReq) (*User, error)
 	BlockUserStatus(context.Context, *BlockUserStatusReq) (*User, error)
 	UnblockUserStatus(context.Context, *UnblockUserStatusReq) (*User, error)
 }
+
 type UserService interface {
 	Registry(context.Context, *RegistryReq) (*User, error)
 	UpdatePassword(context.Context, *UpdatePasswordReq) (*User, error)

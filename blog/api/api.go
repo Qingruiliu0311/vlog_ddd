@@ -12,8 +12,8 @@ type BlogApiHandler struct {
 	blogSvc blog.Service
 }
 
-func NewBlogApiHandler() *BlogApiHandler {
-	return &BlogApiHandler{blogSvc: blog.GetService()}
+func NewBlogApiHandler(bs blog.Service) *BlogApiHandler {
+	return &BlogApiHandler{blogSvc: bs}
 }
 
 func (b *BlogApiHandler) CreateBlog(ctx *gin.Context) {
@@ -40,7 +40,7 @@ func (b *BlogApiHandler) QueryBlog(ctx *gin.Context) {
 	}
 	ins, err := b.blogSvc.QueryBlog(ctx.Request.Context(), *req)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, exception.NewInternalServerRequest("create blog in DB failed %s", err))
+		ctx.JSON(http.StatusInternalServerError, exception.NewInternalServerRequest("query blog in DB failed %s", err))
 		return
 	}
 	ctx.JSON(http.StatusOK, ins)

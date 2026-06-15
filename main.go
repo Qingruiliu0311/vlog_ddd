@@ -4,7 +4,6 @@ import (
 	"github.com/Qingruiliu0311/vlog_ddd/blog"
 	blogapi "github.com/Qingruiliu0311/vlog_ddd/blog/api"
 	blogimpl "github.com/Qingruiliu0311/vlog_ddd/blog/impl"
-	"github.com/Qingruiliu0311/vlog_ddd/middleware"
 	"github.com/Qingruiliu0311/vlog_ddd/token"
 	tokenapi "github.com/Qingruiliu0311/vlog_ddd/token/api"
 	tokenimpl "github.com/Qingruiliu0311/vlog_ddd/token/impl"
@@ -39,17 +38,11 @@ func main() {
 	// route
 	r := gin.Default()
 	v1 := r.Group("/api/v1")
-	blog := v1.Group("/blog")
-	blog.Use(middleware.Authentication)
-	bh := blogapi.NewBlogApiHandler()
-	blog.POST("", bh.CreateBlog)
-	blog.GET("", bh.QueryBlog)
+	bh := blogapi.NewBlogApiHandler(blog.GetService())
+	blogapi.RegisterRouter(v1, bh)
 
-	token := v1.Group("/token")
-	th := tokenapi.NewTokenHandler()
-	token.POST("", th.IssueToken)
-	//98f0fe5a-6acd-491a-bda0-6389d5d5ffbb
-	token.POST("/validate", th.ValidateToken)
+	th := tokenapi.NewTokenApiHandler(token.GetService())
+	tokenapi.RegisterRouter(v1, th)
 	// token.POST()
 	r.Run(":8080")
 }

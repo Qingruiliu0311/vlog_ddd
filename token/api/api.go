@@ -8,17 +8,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type TokenHandler struct {
+type TokenApiHandler struct {
 	TokenService token.Service
 }
 
-func NewTokenHandler() *TokenHandler {
-	return &TokenHandler{
-		TokenService: token.GetService(),
+func NewTokenApiHandler(ts token.Service) *TokenApiHandler {
+	return &TokenApiHandler{
+		TokenService: ts,
 	}
 }
 
-func (th *TokenHandler) IssueToken(ctx *gin.Context) {
+func (th *TokenApiHandler) IssueToken(ctx *gin.Context) {
 	req := token.IssueTokenReq{}
 	err := ctx.BindJSON(&req)
 	if err != nil {
@@ -33,7 +33,7 @@ func (th *TokenHandler) IssueToken(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (th *TokenHandler) ValidateToken(ctx *gin.Context) {
+func (th *TokenApiHandler) ValidateToken(ctx *gin.Context) {
 	req := token.ValidateTokenReq{}
 	err := ctx.BindJSON(&req)
 	if err != nil {
