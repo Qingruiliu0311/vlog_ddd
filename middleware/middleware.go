@@ -19,13 +19,11 @@ func Authentication(ctx *gin.Context) {
 	req := token.ValidateTokenReq{
 		AccessToken: accessToken,
 	}
-	token, err := token.GetService().ValidateToken(ctx.Request.Context(), &req)
+	tk, err := token.GetService().ValidateToken(ctx.Request.Context(), &req)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	c := context.WithValue(ctx.Request.Context(), TokenCtxKey{}, token)
+	c := context.WithValue(ctx.Request.Context(), token.TokenCtxKey{}, tk)
 	ctx.Request = ctx.Request.WithContext(c)
 }
-
-type TokenCtxKey struct{}

@@ -2,8 +2,10 @@ package impl
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Qingruiliu0311/vlog_ddd/blog"
+	"github.com/Qingruiliu0311/vlog_ddd/token"
 	"gorm.io/gorm"
 )
 
@@ -68,6 +70,7 @@ func (b *BlogServiceImplementation) QueryBlog(ctx context.Context, in blog.Query
 			query = query.Where("JSON_EXTRACT(tag,?)=?", "$."+k, v)
 		}
 	}
+	fmt.Println(ctx.Value(token.TokenCtxKey{}))
 
 	set := blog.NewBlogSet()
 

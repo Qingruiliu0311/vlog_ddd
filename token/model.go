@@ -6,6 +6,8 @@ import (
 	"github.com/google/uuid"
 )
 
+type TokenCtxKey struct{}
+
 type Token struct {
 	Id        uint   `json:"id" gorm:"column:id;primaryKey"`
 	RefUserId string `json:"ref_user_id" gorm:"column:ref_user_id"`
